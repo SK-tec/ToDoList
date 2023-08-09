@@ -38,6 +38,29 @@ app.get("/todos/:id", (req, res) => {
     return res.json(todos[todoIndex]);
   });
 });
+app.put("/todos/:id/complete", (req, res) => {
+  const id = parseInt(req.params.id);
+  const findTodoById = (todos, id) => {
+    for (let index = 0; index < todos.length; index++) {
+      if (todos[index].id === id) {
+        return index;
+      }
+    }
+    return -1;
+  };
+  fs.readFile("./store/todolist.json", "utf-8", (err, data) => {
+    if (err) {
+      return res.status(500).send("Somthing went worng with file reading");
+    }
+    let todos = JSON.parse(data);
+    const todoIndex = findTodoById(todos, id);
+    if (todoIndex === -1) return res.status(404).send("Id not found");
+    todos[todoIndex].complete = true;
+    fs.writeFile("./store/todolist.json", JSON.stringify(todos), () => {
+      return res.json({ status: 'ok"' });
+    });
+  });
+});
 app.listen(port, () => {
   console.log(`Application is running on the port ${port}`);
 });
