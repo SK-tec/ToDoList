@@ -7,12 +7,26 @@ app.get("/", (req, res) => {
   res.send("Helloworld!");
 });
 app.get("/todos", (req, res) => {
+  const incompleted = req.query.incomplete;
+  console.log("incompletedTasks" + incompleted);
+  const completedTasks = req.query.complete;
+  console.log("completedTasks" + completedTasks);
   fs.readFile("./store/todolist.json", "utf-8", (err, data) => {
     if (err) {
       return res.status(5000).send("Something went worng with reading file");
     }
     const todos = JSON.parse(data);
-    return res.json({ todos: todos });
+    if (incompleted !== "1" && completedTasks !== "1") {
+      return res.json({ todos: todos });
+    } else if (incompleted === "1") {
+      return res.json({
+        todos: todos.filter((task) => task.complete === false),
+      });
+    } else {
+      return res.json({
+        todos: todos.filter((task) => task.complete === true),
+      });
+    }
   });
 });
 app.get("/todos/:id", (req, res) => {
