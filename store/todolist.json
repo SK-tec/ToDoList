@@ -1,5 +1,1 @@
-[
-  { "id": 1, "name": "Learn nest.js", "complete": true },
-  { "id": 2, "name": "Evening Walk", "complete": true },
-  { "id": 3, "name": "Go shopping", "complete": false }
-]
+[{"id":1,"name":"Learn nest.js","complete":true},{"id":2,"name":"Evening Walk","complete":true},{"id":3,"name":"Go shopping","complete":false},{"id":4,"complete":false,"name":"Learn Music notations"},{"id":5,"complete":false,"name":"Shoping school material"}]

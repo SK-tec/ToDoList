@@ -1,6 +1,12 @@
 const express = require("express");
 const fs = require("fs");
 const app = express();
+app.use(express.json());
+app.use(
+  express.urlencoded({
+    extended: false,
+  })
+);
 const port = 5000;
 
 app.get("/", (req, res) => {
@@ -74,6 +80,37 @@ app.put("/todos/:id/complete", (req, res) => {
       return res.json({ status: 'ok"' });
     });
   });
+});
+app.post("/todos", (req, res) => {
+  if (!req.body.name) {
+    return res.status(400).send("Missing the name");
+  }
+  fs.readFile("./store/todolist.json", "utf-8", (err, data) => {
+    if (err)
+      return res.status(500).send("Something went wrong with File reading");
+
+    const todos = JSON.parse(data);
+    const maxId = Math.max.apply(
+      Math,
+      todos.map((task) => {
+        return task.id;
+      })
+    );
+    todos.push({
+      id: maxId + 1,
+      complete: false,
+      name: req.body.name,
+    });
+    fs.writeFile("./store/todolist.json", JSON.stringify(todos), () => {
+      return res.json({ status: "ok" });
+    });
+  });
+  // const task = JSON.stringify(req.body);
+  // console.log(req.body);
+  // if (task === "{}") {
+  //   return res.status(404).send({ message: "Content cannot be empty" });
+  // }
+  // res.send("hi");
 });
 app.listen(port, () => {
   console.log(`Application is running on the port ${port}`);
